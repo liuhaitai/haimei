@@ -1,15 +1,22 @@
 package com.haitao.haimei
 
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.haitao.haimei.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val greetingText = findViewById<TextView>(R.id.greeting_text)
-        greetingText.text = getString(R.string.hello_android)
+        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+            as NavHostFragment
+        val navController = navHost.navController
+        binding.bottomNav.setupWithNavController(navController)
     }
 }

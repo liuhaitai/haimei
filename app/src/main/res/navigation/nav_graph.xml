@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.haitao.haimei.ui.home.HomeFragment"
+        android:label="@string/tab_home" />
+
+    <fragment
+        android:id="@+id/plansFragment"
+        android:name="com.haitao.haimei.ui.plans.PlansFragment"
+        android:label="@string/tab_plans" />
+
+    <fragment
+        android:id="@+id/diaryFragment"
+        android:name="com.haitao.haimei.ui.diary.DiaryFragment"
+        android:label="@string/tab_diary" />
+
+    <fragment
+        android:id="@+id/diaryEditFragment"
+        android:name="com.haitao.haimei.ui.diary.DiaryEditFragment"
+        android:label="@string/diary_edit_add_title">
+        <argument
+            android:name="entryId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.haitao.haimei.ui.profile.ProfileFragment"
+        android:label="@string/tab_profile" />
+
+</navigation>

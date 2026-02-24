@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/tab_home" />
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/tab_profile" />
+    <item
+        android:id="@+id/diaryFragment"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="@string/tab_diary" />
+    <item
+        android:id="@+id/plansFragment"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/tab_plans" />
+</menu>
+
