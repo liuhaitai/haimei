@@ -45,7 +45,8 @@ class DiaryViewModel(application: Application) : AndroidViewModel(application) {
         content: String,
         time: Long,
         mood: String?,
-        tags: String?
+        tags: String?,
+        imageUris: List<String>?
     ) {
         viewModelScope.launch {
             val now = System.currentTimeMillis()
@@ -57,6 +58,7 @@ class DiaryViewModel(application: Application) : AndroidViewModel(application) {
                 time = time,
                 mood = mood,
                 tags = tags,
+                imageUris = imageUris?.joinToString("|")?.ifBlank { null },
                 createdAt = existing?.createdAt ?: now,
                 updatedAt = now
             )

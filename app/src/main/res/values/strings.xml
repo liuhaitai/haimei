@@ -69,4 +69,9 @@
     <string name="diary_edit_delete">删除</string>
     <string name="diary_edit_content_required">内容不能为空</string>
     <string name="diary_edit_delete_confirm">确定要删除这条日记吗？</string>
+    <string name="diary_edit_images">图片</string>
+    <string name="diary_edit_pick_images">从相册选择</string>
+    <string name="diary_image_hint">含图片</string>
+    <string name="diary_image_preview">图片预览</string>
+    <string name="diary_image_delete">删除图片</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.haitao.haimei.ui.diary
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -48,6 +49,9 @@ class DiaryListAdapter(
                 .orEmpty()
             binding.entryTags.text = tagText
 
+            val hasImages = !entry.imageUris.isNullOrBlank()
+            binding.entryImageHint.visibility = if (hasImages) View.VISIBLE else View.GONE
+
             binding.root.setOnClickListener { onItemClick(entry) }
         }
     }
@@ -62,4 +66,3 @@ class DiaryListAdapter(
         }
     }
 }
-

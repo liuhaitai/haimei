@@ -11,7 +11,7 @@ data class DiaryEntryEntity(
     val time: Long,
     val mood: String?,
     val tags: String?,
+    val imageUris: String?,
     val createdAt: Long,
     val updatedAt: Long
 )
-

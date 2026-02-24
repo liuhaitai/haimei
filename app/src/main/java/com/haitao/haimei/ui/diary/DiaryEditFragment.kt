@@ -1,29 +1,42 @@
 package com.haitao.haimei.ui.diary
 
+import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.haitao.haimei.R
+import com.haitao.haimei.databinding.DialogDiaryImageBinding
 import com.haitao.haimei.databinding.FragmentDiaryEditBinding
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.launch
+import androidx.recyclerview.widget.LinearLayoutManager
+import android.view.WindowManager
 
 class DiaryEditFragment : Fragment() {
     private var _binding: FragmentDiaryEditBinding? = null
     private val binding get() = _binding!!
     private val viewModel: DiaryViewModel by viewModels()
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+
+    private lateinit var pickImagesLauncher: ActivityResultLauncher<Array<String>>
+    private val imageAdapter = DiaryImageAdapter { position, uriText ->
+        showImagePreview(position, uriText)
+    }
+    private val selectedImages = mutableListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +50,28 @@ class DiaryEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val entryId = arguments?.getString(ARG_ENTRY_ID)
+
+        pickImagesLauncher = registerForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
+            if (uris.isNullOrEmpty()) return@registerForActivityResult
+            val resolver = requireContext().contentResolver
+            uris.forEach { uri ->
+                try {
+                    resolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                } catch (_: SecurityException) {
+                    // Ignore if persistable permission is not granted.
+                }
+            }
+            selectedImages.clear()
+            selectedImages.addAll(uris.map(Uri::toString))
+            imageAdapter.submit(selectedImages)
+        }
+
+        binding.diaryEditImagesList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.diaryEditImagesList.adapter = imageAdapter
+
+        binding.diaryEditPickImages.setOnClickListener {
+            pickImagesLauncher.launch(arrayOf("image/*"))
+        }
 
         binding.diaryEditMoodGroup.check(R.id.diary_edit_mood_all)
         binding.diaryEditTimeText.text = formatter.format(LocalDateTime.now())
@@ -70,6 +105,11 @@ class DiaryEditFragment : Fragment() {
                     .format(formatter)
                 binding.diaryEditTimeText.tag = entry.time
                 binding.diaryEditMoodGroup.check(moodButtonIdFromCode(entry.mood))
+
+                val images = entry.imageUris?.split("|")?.filter { it.isNotBlank() }.orEmpty()
+                selectedImages.clear()
+                selectedImages.addAll(images)
+                imageAdapter.submit(selectedImages)
             }
         }
 
@@ -90,7 +130,8 @@ class DiaryEditFragment : Fragment() {
                 content = content,
                 time = timeMillis,
                 mood = mood,
-                tags = tags.ifBlank { null }
+                tags = tags.ifBlank { null },
+                imageUris = selectedImages.toList()
             )
             findNavController().popBackStack()
         }
@@ -124,6 +165,32 @@ class DiaryEditFragment : Fragment() {
         }
 
         picker.show(childFragmentManager, "diary_time_picker")
+    }
+
+    private fun showImagePreview(position: Int, uriText: String) {
+        val dialogBinding = DialogDiaryImageBinding.inflate(layoutInflater)
+        dialogBinding.diaryFullImage.setImageURI(Uri.parse(uriText))
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.diary_image_delete, null)
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                imageAdapter.removeAt(position)
+                selectedImages.clear()
+                selectedImages.addAll(imageAdapter.getItems())
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
+        dialog.window?.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
     }
 
     override fun onDestroyView() {
