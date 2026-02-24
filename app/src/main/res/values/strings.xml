@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">Haimei</string>
+    <string name="hello_android">Hello Android!</string>
 </resources>
