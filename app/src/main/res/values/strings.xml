@@ -3,8 +3,8 @@
     <string name="hello_android">Hello Android!</string>
     <string name="tab_home">Home</string>
     <string name="tab_profile">Profile</string>
-    <string name="tab_diary">Diary</string>
-    <string name="tab_plans">Plans</string>
+    <string name="tab_diary">小本本</string>
+    <string name="tab_plans">想做的事</string>
     <string name="home_placeholder">Home overview will appear here.</string>
     <string name="profile_placeholder">Profile editing will appear here.</string>
     <string name="diary_placeholder">Diary list will appear here.</string>
